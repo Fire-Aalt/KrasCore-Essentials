@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Eflatun.SceneReference;
 using Unity.Entities;
@@ -11,7 +10,6 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
-using SceneReference = Eflatun.SceneReference.SceneReference;
 
 namespace KrasCore.Essentials
 {
