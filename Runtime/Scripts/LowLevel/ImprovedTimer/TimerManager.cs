@@ -5,33 +5,36 @@ namespace KrasCore.Essentials
 {
     public static class TimerManager
     {
-        static readonly List<Timer> timers = new();
-        static readonly List<Timer> sweep = new();
+        private static readonly HashSet<Timer> Timers = new();
+        private static readonly List<Timer> ToRemove = new();
 
-        public static void RegisterTimer(Timer timer) => timers.Add(timer);
-        public static void DeregisterTimer(Timer timer) => timers.Remove(timer);
+        public static void RegisterTimer(Timer timer) => Timers.Add(timer);
+        public static void DeregisterTimer(Timer timer) => ToRemove.Add(timer);
 
         public static void UpdateTimers()
         {
-            if (timers.Count == 0) return;
+            if (Timers.Count == 0) return;
 
-            sweep.RefreshWith(timers);
-            foreach (var timer in sweep)
+            foreach (var timer in Timers)
             {
                 timer.Tick();
             }
+            foreach (var timer in ToRemove)
+            {
+                Timers.Remove(timer);
+            }
+            ToRemove.Clear();
         }
 
         public static void Clear()
         {
-            sweep.RefreshWith(timers);
-            foreach (var timer in sweep)
+            foreach (var timer in Timers)
             {
                 timer.Dispose();
             }
 
-            timers.Clear();
-            sweep.Clear();
+            Timers.Clear();
+            ToRemove.Clear();
         }
     }
 }
