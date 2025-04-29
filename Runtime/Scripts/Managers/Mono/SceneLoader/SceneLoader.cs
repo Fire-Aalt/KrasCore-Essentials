@@ -3,6 +3,8 @@ using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using Sirenix.OdinInspector;
 using System;
+using FMOD.Studio;
+using KrasCore.EcsFMOD;
 using UnityEngine;
 
 namespace KrasCore.Essentials
@@ -19,6 +21,8 @@ namespace KrasCore.Essentials
         public SceneTransitionManager SceneTransitionManager { get; private set; }
         public readonly SceneGroupManager SceneGroupManager = new();
 
+        public static Action OnSceneGroupLoadStart;
+        public static Action OnSceneGroupLoadEnd;
         public static bool IsTransitioning { get; private set; }
         public static bool IsLoading { get; private set; }
 
@@ -52,8 +56,8 @@ namespace KrasCore.Essentials
             {
                 await SceneTransitionManager.TransitionIn(destroyCancellationToken);
             }
-            MMTimeManager.Current.SetTimeScaleTo(1f);
-            MMSoundManager.Current.FreeAllLoopingSounds();
+            
+            OnSceneGroupLoadStart?.Invoke();
 
             // Enable camera -> LoadScenes -> Disable camera
             IsLoading = true;
@@ -62,6 +66,8 @@ namespace KrasCore.Essentials
             SceneTransitionManager.EnableLoadingCamera(false);
             IsLoading = false;
 
+            OnSceneGroupLoadEnd?.Invoke();
+            
             // TransitionOut
             if (loadParams.Transition == SceneTransition.TransitionOut || loadParams.Transition == SceneTransition.TransitionInAndOut)
             {
@@ -97,7 +103,7 @@ namespace KrasCore.Essentials
     }
 
     public struct SaveGameEvent : IEvent { }
-
+    
     public class LoadingProgress : IProgress<float>
     {
         public event Action<float> Progressed;
