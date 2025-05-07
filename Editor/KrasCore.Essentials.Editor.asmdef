@@ -1,0 +1,40 @@
+{
+    "name": "KrasCore.Essentials.Editor",
+    "rootNamespace": "KrasCore.Essentials",
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.Addressables.Editor",
+        "Eflatun.SceneReference",
+        "UniTask",
+        "UniTask.Addressables",
+        "MoreMountains.Tools",
+        "Unity.Entities",
+        "Unity.Scenes",
+        "Unity.Collections",
+        "Unity.Scenes.Editor",
+        "Unity.Mathematics",
+        "KrasCore",
+        "KrasCore.Essentials"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.entities",
+            "expression": "",
+            "define": "UNITY_ENTITIES"
+        },
+        {
+            "name": "com.unity.addressables",
+            "expression": "",
+            "define": "ADDRESSABLES"
+        }
+    ],
+    "noEngineReferences": false
+}

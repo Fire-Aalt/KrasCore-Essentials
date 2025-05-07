@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Eflatun.SceneReference;
@@ -140,4 +139,3 @@ namespace KrasCore.Essentials.Editor
         }
     }
 }
-#endif
