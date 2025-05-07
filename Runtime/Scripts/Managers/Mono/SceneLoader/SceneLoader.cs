@@ -3,8 +3,6 @@ using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using Sirenix.OdinInspector;
 using System;
-using FMOD.Studio;
-using KrasCore.EcsFMOD;
 using UnityEngine;
 
 namespace KrasCore.Essentials

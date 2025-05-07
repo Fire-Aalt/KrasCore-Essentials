@@ -6,10 +6,13 @@ using Cysharp.Threading.Tasks;
 using Eflatun.SceneReference;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+#if ADDRESSABLES
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.SceneManagement;
+#endif
 
 namespace KrasCore.Essentials
 {
@@ -21,7 +24,9 @@ namespace KrasCore.Essentials
         public event Action<string> OnSceneUnloaded = delegate { };
         public event Action OnSceneGroupLoaded = delegate { };
 
+#if ADDRESSABLES
         private readonly AsyncOperationHandleGroup _handleGroup = new(10);
+#endif
         
         public SceneGroup ActiveSceneGroup { get; private set; }
 
@@ -33,7 +38,7 @@ namespace KrasCore.Essentials
             // Set _BootLoader as active scene to unload everything else
             var bootLoader = ScenesDataSO.Instance.bootLoaderScene;
             SceneManager.SetActiveScene(bootLoader.LoadedScene);
-
+            
             await UnloadScenes(bootLoader.LoadedScene, reloadDupScenes, token);
 
 #if UNITY_ENTITIES
@@ -69,6 +74,7 @@ namespace KrasCore.Essentials
 
                     operation.completed += _ => HandleSceneLoaded(sceneData);
                 }
+#if ADDRESSABLES
                 else if (sceneData.Reference.State == SceneReferenceState.Addressable)
                 {
                     var sceneHandle = Addressables.LoadSceneAsync(sceneData.Reference.Path, LoadSceneMode.Additive);
@@ -76,6 +82,7 @@ namespace KrasCore.Essentials
 
                     sceneHandle.Completed += _ => HandleSceneLoaded(sceneData);
                 }
+#endif
             }
             
             if (loadDelay > 0)
@@ -84,11 +91,21 @@ namespace KrasCore.Essentials
             }
 
             // Wait until all AsyncOperations in the group are done
+#if ADDRESSABLES
             while (!operationGroup.IsDone || !_handleGroup.IsDone)
             {
                 progress?.Report((operationGroup.Progress + _handleGroup.Progress) / 2);
+                
                 await UniTask.Delay(1, true, cancellationToken: token);
             }
+#else
+            while (!operationGroup.IsDone)
+            {
+                progress?.Report(operationGroup.Progress);
+                
+                await UniTask.Delay(1, true, cancellationToken: token);
+            }
+#endif
 
 #if UNITY_ENTITIES
             await LoadEntityScenes(group, SubSceneLoadMode.AfterSceneGroup, token);
@@ -128,7 +145,9 @@ namespace KrasCore.Essentials
         private async UniTask UnloadScenes(Scene bootloaderScene, bool unloadDupScenes, CancellationToken token)
         {
             var scenesToUnload = new List<Scene>();
+#if ADDRESSABLES
             var addressableScenesToUnload = new List<AsyncOperationHandle<SceneInstance>>();
+#endif
             int sceneCount = SceneManager.sceneCount;
 
             for (var i = 0; i < sceneCount; i++)
@@ -151,6 +170,7 @@ namespace KrasCore.Essentials
                     continue;
                 }
                 
+#if ADDRESSABLES
                 var addressableHandle =
                     _handleGroup.Handles.FirstOrDefault(h => h.IsValid() && h.Result.Scene.path == scenePath);
 
@@ -159,13 +179,13 @@ namespace KrasCore.Essentials
                     addressableScenesToUnload.Add(addressableHandle);
                 }
                 else
+#endif
                 {
                     scenesToUnload.Add(scene);
                 }
             }
 
             var operationGroup = new AsyncOperationGroup(scenesToUnload.Count);
-            var operationHandleGroup = new AsyncOperationHandleGroup(addressableScenesToUnload.Count);
 
             foreach (var scene in scenesToUnload)
             {
@@ -174,15 +194,22 @@ namespace KrasCore.Essentials
                 operationGroup.Operations.Add(operation);
             }
 
+#if ADDRESSABLES
+            var operationHandleGroup = new AsyncOperationHandleGroup(addressableScenesToUnload.Count);
             foreach (var handle in addressableScenesToUnload)
             {
                 var unloadHandle = Addressables.UnloadSceneAsync(handle);
                 if (!unloadHandle.IsValid()) continue;
                 operationHandleGroup.Handles.Add(unloadHandle);
             }
+#endif
 
             // Wait until all AsyncOperations in the group are done
-            while (!operationGroup.IsDone && !operationHandleGroup.IsDone)
+            while (!operationGroup.IsDone
+#if ADDRESSABLES
+                   && !operationHandleGroup.IsDone
+#endif
+)
             {
                 await UniTask.Delay(1, cancellationToken: token);
             }
@@ -191,11 +218,13 @@ namespace KrasCore.Essentials
             {
                 OnSceneUnloaded.Invoke(scene.path);
             }
+#if ADDRESSABLES
             foreach (var handle in addressableScenesToUnload)
             {
                 _handleGroup.Handles.Remove(handle);
                 OnSceneUnloaded.Invoke(handle.Result.Scene.path);
             }
+#endif
 
             // Optional: UnloadUnusedAssets - unloads all unused assets from memory
             await Resources.UnloadUnusedAssets();
@@ -226,6 +255,7 @@ namespace KrasCore.Essentials
         }
     }
 
+#if ADDRESSABLES
     public readonly struct AsyncOperationHandleGroup
     {
         public readonly List<AsyncOperationHandle<SceneInstance>> Handles;
@@ -238,4 +268,5 @@ namespace KrasCore.Essentials
             Handles = new List<AsyncOperationHandle<SceneInstance>>(initialCapacity);
         }
     }
+#endif
 }
