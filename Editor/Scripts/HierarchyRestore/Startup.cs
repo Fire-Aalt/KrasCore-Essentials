@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using KrasCore.Essentials.Editor;
+using KrasCore.Essentials;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;

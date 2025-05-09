@@ -8,7 +8,7 @@ using System.Diagnostics;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Eflatun.SceneReference;
-using KrasCore.Essentials.Editor;
+using KrasCore.Essentials;
 
 namespace KrasCore.Essentials
 {

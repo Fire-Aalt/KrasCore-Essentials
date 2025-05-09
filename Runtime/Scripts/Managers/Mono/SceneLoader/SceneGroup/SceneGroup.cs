@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 using SceneReference = Eflatun.SceneReference.SceneReference;
 
 #if UNITY_EDITOR
-using KrasCore.Essentials.Editor;
 using UnityEditor.SceneManagement;
 #endif
 

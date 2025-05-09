@@ -1,6 +1,6 @@
 ﻿
 #if UNITY_EDITOR
-namespace KrasCore.Essentials.Editor
+namespace KrasCore.Essentials
 {
     public static class EditorScenesDataWrapper
     {
