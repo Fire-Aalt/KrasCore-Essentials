@@ -7,7 +7,6 @@ namespace KrasCore.Essentials
         protected static T instance;
         public static bool HasInstance => instance != null;
         public static T TryGetInstance() => HasInstance ? instance : null;
-        public static T Current => instance;
 
         public static T Instance
         {
@@ -24,7 +23,8 @@ namespace KrasCore.Essentials
         }
 
         protected virtual void Awake() => InitializeSingleton();
-
+        protected virtual void OnDestroy() => instance = null;
+        
         protected virtual void InitializeSingleton()
         {
             if (!Application.isPlaying)

@@ -45,8 +45,8 @@ namespace KrasCore.Essentials
                 return;
             }
             
-            await UniTask.WaitUntil(() => SceneLoader.Current != null);
-            await SceneLoader.Current.LoadSceneGroup(new LoadSceneGroupParams
+            await UniTask.WaitUntil(() => SceneLoader.TryGetInstance());
+            await SceneLoader.Instance.LoadSceneGroup(new LoadSceneGroupParams
                     { SceneGroupIndex = firstSceneGroupIndex, Transition = SceneTransition.TransitionOut })
                 .SuppressCancellationThrow();
         }
