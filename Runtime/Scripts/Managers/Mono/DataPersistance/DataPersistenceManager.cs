@@ -320,8 +320,9 @@ namespace KrasCore.Essentials
             SceneLoader.Instance.SceneGroupManager.OnScenePersisted += HandleSceneLoaded;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             SceneLoader.Instance.SceneGroupManager.OnScenePersisted -= HandleSceneLoaded;
         }
 

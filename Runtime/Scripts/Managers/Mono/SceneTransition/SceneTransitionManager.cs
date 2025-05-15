@@ -3,14 +3,15 @@ using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 namespace KrasCore.Essentials
 {
     public class SceneTransitionManager : MonoBehaviour
     {
         [Title("References")]
-        [SerializeField] protected CanvasGroup loadingCanvasGroup;
+        [SerializeField] protected UIDocument loadingDocument;
         [SerializeField] protected Camera loadingCamera;
 
         [Title("MMF Players")]
@@ -27,10 +28,13 @@ namespace KrasCore.Essentials
         [SerializeField, ShowIf("loadingBar")] protected float fillSpeed = 5f;
 
         protected float targetProgress;
+        private VisualElement _blackPanel;
 
         protected virtual void Awake()
         {
-            SetCanvasGroupActive(true);
+            _blackPanel = loadingDocument.rootVisualElement.Q<VisualElement>("BlackPanel");
+            
+            SetBlackPanelActive(true);
             transitionInPlayer.Initialization();
             transitionOutPlayer.Initialization();
         }
@@ -72,7 +76,7 @@ namespace KrasCore.Essentials
         {
             transitionInPlayer.PlayFeedbacks();
 
-            await LerpCanvasGroupAlpha(transitionDuration, true, token);
+            await LerpBlackPanelOpacity(transitionDuration, true, token);
         }
 
         public virtual async UniTask TransitionOut(CancellationToken token)
@@ -80,10 +84,10 @@ namespace KrasCore.Essentials
             transitionOutPlayer.PlayFeedbacks();
 
             await UniTask.WaitForSeconds(initializeSceneGroupDuration, ignoreTimeScale: true, cancellationToken: token);
-            await LerpCanvasGroupAlpha(transitionDuration, false, token);
+            await LerpBlackPanelOpacity(transitionDuration, false, token);
         }
 
-        protected virtual async UniTask LerpCanvasGroupAlpha(float duration, bool setActive, CancellationToken token)
+        protected virtual async UniTask LerpBlackPanelOpacity(float duration, bool setActive, CancellationToken token)
         {
             float startAlpha = setActive ? 0f : 1f;
             float endAlpha = setActive ? 1f : 0f;
@@ -93,18 +97,17 @@ namespace KrasCore.Essentials
             {
                 elapsedTime += Time.unscaledDeltaTime;
 
-                loadingCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
+                _blackPanel.style.opacity = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
                 await UniTask.Yield(cancellationToken: token);
             }
 
-            SetCanvasGroupActive(setActive);
+            SetBlackPanelActive(setActive);
         }
 
-        private void SetCanvasGroupActive(bool isActive)
+        private void SetBlackPanelActive(bool isActive)
         {
-            loadingCanvasGroup.alpha = isActive ? 1f : 0f;
-            loadingCanvasGroup.blocksRaycasts = isActive;
+            _blackPanel.style.opacity = isActive ? 1f : 0f;
+            _blackPanel.pickingMode = isActive ? PickingMode.Position : PickingMode.Ignore;
         }
-
     }
 }
