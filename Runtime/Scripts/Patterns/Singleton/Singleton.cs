@@ -8,6 +8,12 @@ namespace KrasCore.Essentials
         public static bool HasInstance => instance != null;
         public static T TryGetInstance() => HasInstance ? instance : null;
 
+        public static bool TryGetInstance(out T handle)
+        {
+            handle = HasInstance ? instance : null;
+            return HasInstance;
+        }
+        
         public static T Instance
         {
             get
