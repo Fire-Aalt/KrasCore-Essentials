@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using System.Threading;
 using UnityEngine;
@@ -13,10 +12,6 @@ namespace KrasCore.Essentials
         [Title("References")]
         [SerializeField] protected UIDocument loadingDocument;
         [SerializeField] protected Camera loadingCamera;
-
-        [Title("MMF Players")]
-        [SerializeField] protected MMF_Player transitionInPlayer;
-        [SerializeField] protected MMF_Player transitionOutPlayer;
 
         [Title("Transition Params")]
         [SerializeField] protected float initializeSceneGroupDuration = 1f;
@@ -35,8 +30,6 @@ namespace KrasCore.Essentials
             _blackPanel = loadingDocument.rootVisualElement.Q<VisualElement>("BlackPanel");
             
             SetBlackPanelActive(true);
-            transitionInPlayer.Initialization();
-            transitionOutPlayer.Initialization();
         }
 
         protected virtual void Update()
@@ -74,15 +67,11 @@ namespace KrasCore.Essentials
 
         public virtual async UniTask TransitionIn(CancellationToken token)
         {
-            transitionInPlayer.PlayFeedbacks();
-
             await LerpBlackPanelOpacity(transitionDuration, true, token);
         }
 
         public virtual async UniTask TransitionOut(CancellationToken token)
         {
-            transitionOutPlayer.PlayFeedbacks();
-
             await UniTask.WaitForSeconds(initializeSceneGroupDuration, ignoreTimeScale: true, cancellationToken: token);
             await LerpBlackPanelOpacity(transitionDuration, false, token);
         }
