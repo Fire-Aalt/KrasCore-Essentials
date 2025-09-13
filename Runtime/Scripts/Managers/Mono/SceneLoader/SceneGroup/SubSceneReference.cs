@@ -1,9 +1,9 @@
 #if UNITY_ENTITIES
 using System;
-using Sirenix.OdinInspector;
 using Unity.Scenes;
 using UnityEngine;
 using Hash128 = Unity.Entities.Hash128;
+using ArtificeToolkit.Attributes;
 
 #if UNITY_EDITOR
 using UnityEditor;

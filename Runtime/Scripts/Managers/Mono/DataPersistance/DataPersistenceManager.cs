@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Sirenix.OdinInspector;
 using System;
 using System.IO;
 using System.Diagnostics;
+using ArtificeToolkit.Attributes;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Eflatun.SceneReference;
@@ -24,14 +24,14 @@ namespace KrasCore.Essentials
         [SerializeField] private bool _multipleProfiles = true;
 
         [InfoBox("{id} refers to profileId which will be used for lookup")]
-        [SerializeField, ShowIf("_multipleProfiles"), ValidateInput("IsPatternValid")]
+        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput("IsPatternValid")]
         private string _profileDirectoryNamePattern = "profile{id}";
-        [SerializeField, ShowIf("_multipleProfiles"), ValidateInput("IsPatternValid")]
+        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput("IsPatternValid")]
         private string _profileFileNamePattern = "game{id}.data";
 
-        [SerializeField, HideIf("_multipleProfiles")]
+        [SerializeField, EnableIf(nameof(_multipleProfiles), false)]
         private string _profileDirectoryName = "profile";
-        [SerializeField, HideIf("_multipleProfiles")]
+        [SerializeField, EnableIf(nameof(_multipleProfiles), false)]
         private string _profileFileName = "game.data";
 
         [Title("Encryption")]
@@ -54,7 +54,7 @@ namespace KrasCore.Essentials
         }
 
         [Title("Open Actions")]
-        [Button(size: ButtonSizes.Large)]
+        [Button]
         private void OpenSavesFolder()
         {
             string path = Path.GetFullPath(Application.persistentDataPath);
@@ -66,7 +66,7 @@ namespace KrasCore.Essentials
             Process.Start(startInfo);
         }
 
-        [Button(size: ButtonSizes.Large)]
+        [Button]
         private void OpenRecentSaveFile()
         {
             if (_gameDataHandler == null)

@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
 using System.Threading;
+using ArtificeToolkit.Attributes;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
@@ -19,8 +19,8 @@ namespace KrasCore.Essentials
 
         [Title("Loading Bar")]
         [SerializeField] protected bool loadingBar;
-        [SerializeField, ShowIf("loadingBar")] protected Image loadingBarImage;
-        [SerializeField, ShowIf("loadingBar")] protected float fillSpeed = 5f;
+        [SerializeField, EnableIf(nameof(loadingBar), true)] protected Image loadingBarImage;
+        [SerializeField, EnableIf(nameof(loadingBar), true)] protected float fillSpeed = 5f;
 
         protected float targetProgress;
         private VisualElement _blackPanel;

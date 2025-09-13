@@ -1,5 +1,5 @@
+using ArtificeToolkit.Attributes;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,7 +19,7 @@ namespace KrasCore.Essentials
         // System guid we use for comparison and generation
         System.Guid guid = System.Guid.Empty;
 
-        [InfoBox("Do NOT apply this field value to a prefab and do NOT press Revert All button", InfoMessageType.Warning)]
+        [InfoBox("Do NOT apply this field value to a prefab and do NOT press Revert All button", InfoBoxAttribute.InfoMessageType.Warning)]
         [SerializeField, ReadOnly]
         private string _serializedGuid;
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ArtificeToolkit.Attributes;
 using Eflatun.SceneReference;
-using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
 using SceneReference = Eflatun.SceneReference.SceneReference;
 

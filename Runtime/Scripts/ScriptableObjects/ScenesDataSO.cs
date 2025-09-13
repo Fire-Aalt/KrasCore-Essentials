@@ -1,6 +1,5 @@
-using System;
+using ArtificeToolkit.Attributes;
 using Eflatun.SceneReference;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace KrasCore.Essentials
