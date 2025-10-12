@@ -63,7 +63,7 @@ namespace HierarchyRestore
                 .GetType()
                 .GetMethod("ExpandTreeViewItem", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            methodInfo.Invoke(sceneHierarchy, new object[] { go.GetInstanceID(), expand });
+            methodInfo.Invoke(sceneHierarchy, new object[] { go.GetEntityId(), expand });
         }
 
         public static object GetSceneHierarchy()
