@@ -15,7 +15,7 @@ namespace KrasCore.Essentials
     public abstract class DataPersistenceManager<T1, T2> : Singleton<DataPersistenceManager<T1, T2>> where T1 : SettingsDataModel where T2 : GameDataModel
     {
         [Title("Debug")]
-        [SerializeField] private bool _disableDataPersistence = false;
+        [SerializeField] private bool _disableDataPersistence;
 
         [Title("Settings File Storage")]
         [SerializeField] private string _settingsFileName = "settings.data";
@@ -24,10 +24,10 @@ namespace KrasCore.Essentials
         [SerializeField] private bool _multipleProfiles = true;
 
         [InfoBox("{id} refers to profileId which will be used for lookup")]
-        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput("IsPatternValid")]
-        private string _profileDirectoryNamePattern = "profile{id}";
-        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput("IsPatternValid")]
-        private string _profileFileNamePattern = "game{id}.data";
+        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput(nameof(IsDirectoryPatternValid))]
+        protected string _profileDirectoryNamePattern = "profile{id}";
+        [SerializeField, EnableIf(nameof(_multipleProfiles), true), ValidateInput(nameof(IsFilePatternValid))]
+        protected string _profileFileNamePattern = "game{id}.data";
 
         [SerializeField, EnableIf(nameof(_multipleProfiles), false)]
         private string _profileDirectoryName = "profile";
@@ -35,7 +35,7 @@ namespace KrasCore.Essentials
         private string _profileFileName = "game.data";
 
         [Title("Encryption")]
-        [SerializeField] private bool _useEncryption = false;
+        [SerializeField] private bool _useEncryption;
         [SerializeField, ReadOnly] private string _encryptionKey = Guid.NewGuid().ToString();
 
         private T1 _settingsData;
@@ -48,9 +48,14 @@ namespace KrasCore.Essentials
 
         private int _selectedProfileId;
 
-        protected bool IsPatternValid(string pattern)
+        protected bool IsDirectoryPatternValid()
         {
-            return pattern.Contains(MultipleFilesDataHandler<T2>.ID_LOOKUP);
+            return _profileDirectoryNamePattern.Contains(MultipleFilesDataHandler<T2>.ID_LOOKUP);
+        }
+        
+        protected bool IsFilePatternValid()
+        {
+            return _profileFileNamePattern.Contains(MultipleFilesDataHandler<T2>.ID_LOOKUP);
         }
 
         [Title("Open Actions")]
