@@ -38,13 +38,20 @@ namespace KrasCore.Essentials
             // Set _BootLoader as active scene to unload everything else
             var bootLoader = ScenesDataSO.Instance.bootLoaderScene;
             SceneManager.SetActiveScene(bootLoader.LoadedScene);
+
+#if UNITY_ENTITIES
+            if (restartEntitiesWorld)
+            {
+                DisposeEntitiesWorld();
+            }
+#endif
             
             await UnloadScenes(bootLoader.LoadedScene, reloadDupScenes, token);
 
 #if UNITY_ENTITIES
             if (restartEntitiesWorld)
             {
-                RestartEntitiesWorld();
+                StartEntitiesWorld();
             }
 #endif
             
@@ -230,16 +237,21 @@ namespace KrasCore.Essentials
             await Resources.UnloadUnusedAssets();
         }
         
-        private static void RestartEntitiesWorld()
+#if UNITY_ENTITIES
+        private static void DisposeEntitiesWorld()
         {
             World.DefaultGameObjectInjectionWorld.Dispose();
-            
+        }
+        
+        private static void StartEntitiesWorld()
+        {
             DefaultWorldInitialization.Initialize("Default World");
             if (!ScriptBehaviourUpdateOrder.IsWorldInCurrentPlayerLoop(World.DefaultGameObjectInjectionWorld))
             {
                 ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(World.DefaultGameObjectInjectionWorld);
             }
         }
+#endif
     }
     
     public readonly struct AsyncOperationGroup
