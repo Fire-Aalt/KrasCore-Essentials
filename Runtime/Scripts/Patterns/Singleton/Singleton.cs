@@ -14,7 +14,7 @@ namespace KrasCore.Essentials
             return HasInstance;
         }
         
-        public static T Instance
+        public static T I
         {
             get
             {

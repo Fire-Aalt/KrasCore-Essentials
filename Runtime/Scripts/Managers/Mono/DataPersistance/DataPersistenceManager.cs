@@ -322,13 +322,13 @@ namespace KrasCore.Essentials
 
         private void Start()
         {
-            SceneLoader.Instance.SceneGroupManager.OnScenePersisted += HandleSceneLoaded;
+            SceneLoader.I.SceneGroupManager.OnScenePersisted += HandleSceneLoaded;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            SceneLoader.Instance.SceneGroupManager.OnScenePersisted -= HandleSceneLoaded;
+            SceneLoader.I.SceneGroupManager.OnScenePersisted -= HandleSceneLoaded;
         }
 
         protected void OnApplicationQuit()
