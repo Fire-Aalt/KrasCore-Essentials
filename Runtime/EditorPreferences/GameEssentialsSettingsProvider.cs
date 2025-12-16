@@ -37,13 +37,13 @@ namespace KrasCore.Essentials
         [SettingsProvider]
         public static SettingsProvider Create()
         {
-            return new GameEssentialsSettingsProvider("Tools/Game Essentials", SettingsScope.Project);
+            return new GameEssentialsSettingsProvider("Preferences/Game Essentials", SettingsScope.User);
         }
 
         [MenuItem("Tools/Game Essentials Preferences")]
         private static void Open()
         {
-            SettingsService.OpenProjectSettings("Tools/Game Essentials");
+            SettingsService.OpenProjectSettings("Preferences/Game Essentials");
         }
     }
 }
