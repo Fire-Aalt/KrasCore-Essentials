@@ -115,27 +115,37 @@ namespace KrasCore.Essentials.Editor
 
         private static int GetFirstSceneGroupIndex(SceneGroup[] sceneGroups, List<string> openedScenes)
         {
-            for (int i = 0; i < openedScenes.Count; i++)
-            {
-                int sceneGroupIndex = GetSceneGroupIndex(sceneGroups, openedScenes[i]);
-                if (sceneGroupIndex != -1)
-                {
-                    return sceneGroupIndex;
-                }
-            }
-            return -1;
-        }
-
-        private static int GetSceneGroupIndex(SceneGroup[] sceneGroups, string scenePath)
-        {
             for (int i = 0; i < sceneGroups.Length; i++)
             {
-                if (scenePath == sceneGroups[i].MainScene.Reference.Path)
+                if (IsOpenedSceneGroup(sceneGroups[i], openedScenes))
                 {
                     return i;
                 }
             }
             return -1;
+        }
+
+        private static bool IsOpenedSceneGroup(SceneGroup sceneGroup, List<string> openedScenes)
+        {
+            var matchedScenes = new List<string>();
+
+            foreach (var openedScene in openedScenes)
+            {
+                var matchedScene = sceneGroup.Scenes.FirstOrDefault(s => s.Reference.Path == openedScene);
+                if (matchedScene != null)
+                {
+                    matchedScenes.Add(matchedScene.Reference.Path);
+                }
+            }
+
+            foreach (var sceneData in sceneGroup.Scenes)
+            {
+                if (!matchedScenes.Contains(sceneData.Reference.Path))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

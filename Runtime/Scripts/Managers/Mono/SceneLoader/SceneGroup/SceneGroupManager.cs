@@ -61,11 +61,6 @@ namespace KrasCore.Essentials
                 loadedScenes.Add(SceneManager.GetSceneAt(i).name);
             }
 
-#if UNITY_ENTITIES
-            // Load SubScenes before any other scenes
-            await LoadEntityScenes(group, SubSceneLoadMode.BeforeSceneGroup, token);
-#endif
-
             var totalScenesToLoad = ActiveSceneGroup.Scenes.Count;
             var operationGroup = new AsyncOperationGroup(totalScenesToLoad);
 
@@ -114,31 +109,8 @@ namespace KrasCore.Essentials
             }
 #endif
 
-#if UNITY_ENTITIES
-            await LoadEntityScenes(group, SubSceneLoadMode.AfterSceneGroup, token);
-#endif
-
             OnSceneGroupLoaded.Invoke();
         }
-
-#if UNITY_ENTITIES
-        private async UniTask LoadEntityScenes(SceneGroup group, SubSceneLoadMode loadMode, CancellationToken token)
-        {
-            var subSceneLoaderSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SubSceneLoaderSystem>();
-            foreach (var subSceneReference in group.SubScenes)
-            {
-                if (subSceneReference.LoadMode == loadMode)
-                {
-                    subSceneLoaderSystem.TryAddLoadRequest(subSceneReference.RuntimeHash);
-                }
-            }
-            
-            while (!subSceneLoaderSystem.AreAllRequestedSubScenesLoaded())
-            {
-                await UniTask.Delay(1, true, cancellationToken: token);
-            }
-        }
-#endif
 
         private void HandleSceneLoaded(SceneData sceneData)
         {

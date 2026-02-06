@@ -36,17 +36,6 @@ namespace KrasCore.Essentials
                 group.Validate();
             }
         }
-
-#if UNITY_ENTITIES
-        [Button]
-        private void ValidateSubScenes()
-        {
-            foreach (var group in sceneGroups)
-            {
-                group.ValidateSubScenes();
-            }
-        }
-#endif
 #endif
     }
 }
