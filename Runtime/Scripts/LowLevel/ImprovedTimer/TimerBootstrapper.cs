@@ -8,7 +8,7 @@ namespace KrasCore.Essentials
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         internal static void Initialize()
         {
-            PlayerLoopUtils.AddRuntimeSystem<Update>(typeof(TimerManager), TimerManager.UpdateTimers,
+            PlayerLoopUtils.AddPlayerLoopSystem<Update>(typeof(TimerManager), TimerManager.UpdateTimers,
                 TimerManager.Clear);
         }
     }
