@@ -1,10 +1,11 @@
 {
-  "name": "com.renderdream.gameessentials",
+  "name": "com.firealt.gameessentials",
   "version": "1.2.3",
   "displayName": "FireAlt Game Essentials",
   "discription": "A package that focuses on adding essential classes, such as: managers, EventBus, BootLoader, etc.",
   "unity": "2022.3",
   "dependencies": {
+    "com.firealt.krascore": "1.0.0",
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.0.0",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
   },
