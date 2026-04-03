@@ -7,6 +7,7 @@ using Eflatun.SceneReference;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using BovineLabs.Core.Pause;
 
 #if ADDRESSABLES
 using UnityEngine.AddressableAssets;
@@ -53,8 +54,12 @@ namespace KrasCore.Essentials
             {
                 StartEntitiesWorld();
             }
+            // Freeze systems to ensure all objects are loaded
+            var world = World.DefaultGameObjectInjectionWorld;
+            var handle = world.GetOrCreateSystem<SceneLoaderPauseSystem>();
+            SetEntitiesWorldPauseState(world, handle, true);
 #endif
-            
+
             int sceneCount = SceneManager.sceneCount;
             for (var i = 0; i < sceneCount; i++)
             {
@@ -109,6 +114,10 @@ namespace KrasCore.Essentials
             }
 #endif
 
+#if UNITY_ENTITIES
+            // Unfreeze systems
+            SetEntitiesWorldPauseState(world, handle, false);
+#endif
             OnSceneGroupLoaded.Invoke();
         }
 
@@ -222,6 +231,13 @@ namespace KrasCore.Essentials
             {
                 ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(World.DefaultGameObjectInjectionWorld);
             }
+        }
+        
+        private static void SetEntitiesWorldPauseState(World world, SystemHandle handle, bool pause)
+        {
+            ref var state = ref world.Unmanaged.ResolveSystemStateRef(handle);
+            if (pause) PauseGame.Pause(ref state, pauseAll: true);
+            else PauseGame.Unpause(ref state);
         }
 #endif
     }
