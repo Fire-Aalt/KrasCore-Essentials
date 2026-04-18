@@ -42,7 +42,7 @@ namespace KrasCore.Essentials
         private T2 _gameData;
         private SingleFileDataHandler<T1> _settingsDataHandler;
         private MultipleFilesDataHandler<T2> _gameDataHandler;
-        private Dictionary<int, DataPersistenceObjects<T1, T2>> _sceneDataObjects;
+        private Dictionary<SceneHandle, DataPersistenceObjects<T1, T2>> _sceneDataObjects;
 
         private EventBinding<SaveGameEvent> _saveGameBinding;
 
@@ -141,7 +141,7 @@ namespace KrasCore.Essentials
                 _encryptionKey, _useEncryption, _settingsFileName);
             _gameDataHandler = new MultipleFilesDataHandler<T2>(Application.persistentDataPath,
                 _encryptionKey, _useEncryption, profileDirectoryPattern, profileFilePattern);
-            _sceneDataObjects = new Dictionary<int, DataPersistenceObjects<T1, T2>>();
+            _sceneDataObjects = new Dictionary<SceneHandle, DataPersistenceObjects<T1, T2>>();
 
             if (_multipleProfiles)
             {

@@ -90,7 +90,7 @@ namespace HierarchyRestore
 
         public static void ExpandHeirarchy(HashSet<ulong> expandedGameObjectsIds)
         {
-            GameObject[] objects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            GameObject[] objects = Object.FindObjectsByType<GameObject>();
             foreach (var o in objects)
             {
                 ulong objectId = GlobalObjectId.GetGlobalObjectIdSlow(o).targetObjectId;

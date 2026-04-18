@@ -52,7 +52,7 @@ namespace HierarchyRestore
         {
             string projectPath = System.Environment.CurrentDirectory + "/HierarchyHistory";
             string filepath = projectPath + "/" + scene.path.Replace(".", "dot").Replace("/", "#") + ".txt";
-            GameObject[] gos = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+            GameObject[] gos = Object.FindObjectsByType<GameObject>();
             List<GameObject> expandedGameObjects = Utilities.GetExpandedGameObjects();
             StringBuilder sb = new StringBuilder(gos.Length);
             const string separator = "|";
